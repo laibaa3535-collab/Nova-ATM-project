@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATM System | Project 19</title>
+<style>
+:root{--navy:#101a35;--navy2:#17264b;--cyan:#39d6c4;--white:#f7f9ff;--muted:#9aa8c7;--line:rgba(255,255,255,.12);--red:#ff7185}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--white);background:radial-gradient(circle at 15% 10%,#263d70 0,transparent 35%),linear-gradient(135deg,#0a1023,#121d3c 60%,#0b142c);display:flex;align-items:center;justify-content:center;padding:28px}
+.app{width:min(1100px,100%);display:grid;grid-template-columns:300px 1fr;gap:22px}.sidebar,.main{border:1px solid var(--line);background:rgba(18,29,58,.83);border-radius:24px;box-shadow:0 24px 70px #0004;backdrop-filter:blur(16px)}
+.sidebar{padding:28px 22px;display:flex;flex-direction:column;min-height:690px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:.3px}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(135deg,var(--cyan),#66a8ff);display:grid;place-items:center;color:#10213c;font-size:24px}.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800;margin:42px 0 12px}.side-title{font-size:28px;line-height:1.15;margin:0 0 12px}.side-copy{color:var(--muted);font-size:14px;line-height:1.7;margin:0}.mini-card{margin-top:28px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#263c6a,#1a2a50);border:1px solid var(--line)}.mini-label{color:#b9c7e4;font-size:12px}.mini-value{font-size:24px;font-weight:800;margin-top:8px}.status{display:flex;align-items:center;gap:8px;font-size:12px;color:#b9c7e4;margin-top:14px}.dot{width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 12px var(--cyan)}.side-bottom{margin-top:auto;padding-top:28px;color:#7484a8;font-size:12px;line-height:1.7}
+.main{padding:30px;min-height:690px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}.topbar h1{font-size:25px;margin:0}.topbar p{margin:7px 0 0;color:var(--muted);font-size:13px}.badge{border:1px solid rgba(57,214,196,.3);background:rgba(57,214,196,.09);color:var(--cyan);padding:9px 12px;border-radius:30px;font-size:11px;font-weight:800;white-space:nowrap}
+.screen{display:none}.screen.active{display:block}.login-card{max-width:440px;margin:42px auto 0;text-align:center}.lock{width:68px;height:68px;margin:0 auto 18px;border-radius:22px;display:grid;place-items:center;background:rgba(57,214,196,.12);border:1px solid rgba(57,214,196,.3);font-size:30px}.login-card h2{font-size:26px;margin:0 0 9px}.sub{color:var(--muted);font-size:14px;line-height:1.6}.field{text-align:left;margin:24px 0 14px}.field label{display:block;font-size:12px;color:#b9c7e4;margin-bottom:9px}.field input{width:100%;background:#0d1730;border:1px solid #344466;border-radius:12px;padding:15px;color:white;font-size:17px;letter-spacing:5px;outline:none}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #39d6c41a}.btn{border:0;border-radius:12px;padding:14px 18px;font-weight:800;cursor:pointer;transition:.2s;font-size:14px}.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}.primary{background:var(--cyan);color:#0c1b32}.full{width:100%}.hint{font-size:11px;color:#7789af;margin-top:15px}.error{color:var(--red);font-size:12px;min-height:17px;margin-top:10px}
+.balance-card{background:linear-gradient(115deg,#2b4a7c,#1b2b53 70%);border:1px solid #ffffff1c;border-radius:20px;padding:24px;position:relative;overflow:hidden}.balance-card:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;border:35px solid #ffffff08;right:-30px;top:-70px}.balance-top{display:flex;justify-content:space-between;align-items:center;color:#c3d0ec;font-size:13px}.balance-amount{font-size:clamp(30px,5vw,42px);font-weight:800;letter-spacing:-1px;margin:17px 0 8px}.account-no{font-size:12px;color:#b5c6e7}.account-no span{color:white;letter-spacing:1px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:18px 0 25px}.action{background:#162344;border:1px solid var(--line);border-radius:16px;padding:18px 12px;color:white;text-align:left;cursor:pointer;transition:.2s}.action:hover,.action.selected{border-color:var(--cyan);background:#1a3150}.action-icon{font-size:22px;margin-bottom:14px}.action strong{display:block;font-size:13px}.action small{display:block;color:var(--muted);margin-top:6px;font-size:11px}
+.content-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.panel{background:#111d39;border:1px solid var(--line);border-radius:17px;padding:20px}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.panel h3{margin:0;font-size:15px}.panel-head span{font-size:11px;color:var(--muted)}.transaction{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #ffffff0c}.transaction:last-child{border:0;padding-bottom:0}.tx-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:#243657;font-size:15px}.tx-info{flex:1;min-width:0}.tx-info strong{display:block;font-size:12px}.tx-info small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.tx-amount{font-size:12px;font-weight:800}.positive{color:var(--cyan)}.negative{color:#ff8796}.form-panel{max-width:490px;margin:10px auto}.form-panel h2{margin:0 0 8px}.form-panel .field input{letter-spacing:normal}.form-actions{display:flex;gap:10px;margin-top:18px}.secondary{background:#263452;color:#dce6ff}.notice{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}.hidden{display:none!important}
+@media(max-width:780px){body{padding:14px}.app{grid-template-columns:1fr}.sidebar{min-height:auto;padding:20px}.sidebar .eyebrow,.side-title,.side-copy,.mini-card,.side-bottom{display:none}.brand{font-size:18px}.main{padding:20px;min-height:650px}.topbar h1{font-size:21px}.content-grid{grid-template-columns:1fr}.actions{gap:8px}.action{padding:14px 10px}.action small{font-size:10px}.badge{font-size:9px;padding:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">▣</div><div>Nova<span style="color:var(--cyan)">ATM</span></div></div>
+    <div class="eyebrow">Secure banking experience</div>
+    <h2 class="side-title">Your money.<br>In your control.</h2>
+    <p class="side-copy">A simple ATM simulation built with a clean interface and essential banking operations.</p>
+    <div class="mini-card"><div class="mini-label">SYSTEM STATUS</div><div class="mini-value">All systems go</div><div class="status"><i class="dot"></i> Demo mode active</div></div>
+    <div class="side-bottom">OOP PROJECT • ATM SYSTEM<br>Frontend demo — sample account data only.<br>© 2026 NovaATM</div>
+  </aside>
+  <main class="main">
+    <div class="topbar"><div><h1 id="pageTitle">Welcome back</h1><p id="pageSubtitle">Enter your PIN to access your account.</p></div><div class="badge">● SECURE SESSION</div></div>
+
+    <section id="loginScreen" class="screen active">
+      <div class="login-card">
+        <div class="lock">♙</div><h2>Access your account</h2><p class="sub">Please enter your 4-digit personal identification number.</p>
+        <form id="loginForm"><div class="field"><label for="pin">ATM PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" required></div><button class="btn primary full" type="submit">Unlock account&nbsp; →</button><div id="loginError" class="error"></div></form>
+        <div class="hint">DEMO PIN: <strong style="color:#dce6ff;letter-spacing:2px">1234</strong></div>
+      </div>
+    </section>
+
+    <section id="dashboardScreen" class="screen">
+      <div class="balance-card"><div class="balance-top"><span>AVAILABLE BALANCE</span><span>◉ PKR ACCOUNT</span></div><div class="balance-amount" id="balance">Rs 25,000.00</div><div class="account-no">Account number&nbsp; <span>•••• •••• 2048</span></div></div>
+      <div class="actions">
+        <button class="action" data-action="deposit"><div class="action-icon">↙</div><strong>Deposit</strong><small>Add money</small></button>
+        <button class="action" data-action="withdraw"><div class="action-icon">↗</div><strong>Withdraw</strong><small>Take out cash</small></button>
+        <button class="action" data-action="balance"><div class="action-icon">◉</div><strong>Balance</strong><small>Check funds</small></button>
+      </div>
+      <div class="content-grid">
+        <div class="panel"><div class="panel-head"><h3>Recent transactions</h3><span id="txCount">0 total</span></div><div id="transactions"></div></div>
+        <div class="panel"><div class="panel-head"><h3>Account overview</h3><span>DEMO</span></div><div class="transaction"><div class="tx-icon">♙</div><div class="tx-info"><strong>Account holder</strong><small>Demo User</small></div></div><div class="transaction"><div class="tx-icon">▤</div><div class="tx-info"><strong>Account type</strong><small>Savings account</small></div></div><div class="transaction"><div class="tx-icon">↻</div><div class="tx-info"><strong>Total transactions</strong><small id="totalTransactions">0 transactions</small></div></div><button id="logoutBtn" class="btn secondary full" style="margin-top:16px">Lock account&nbsp; ↗</button></div>
+      </div>
+    </section>
+
+    <section id="operationScreen" class="screen">
+      <div class="form-panel panel"><div class="lock" id="operationIcon">↙</div><h2 id="operationTitle">Deposit money</h2><p class="sub" id="operationDescription">Add funds to your account.</p>
+        <form id="operationForm"><div class="field" id="amountField"><label for="amount">AMOUNT (PKR)</label><input id="amount" type="number" min="1" step="1" placeholder="Enter amount e.g. 5000" required></div><div class="form-actions"><button type="button" class="btn secondary" id="backBtn">← Back</button><button class="btn primary" type="submit" id="submitOperation" style="flex:1">Confirm deposit</button></div><div id="operationMessage" class="notice"></div></form>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+const DEMO_PIN = "1234";
+let balance = 25000;
+let transactionCount = 0;
+let transactions = [
+  {title:"Account opened", date:"Today • Demo account", amount:25000, kind:"positive", icon:"✓"}
+];
+let currentOperation = "deposit";
+
+const $ = id => document.getElementById(id);
+function showScreen(screen) {
+  ["loginScreen","dashboardScreen","operationScreen"].forEach(id => $(id).classList.toggle("active", id===screen));
+}
+function money(value){return "Rs "+Number(value).toLocaleString("en-PK",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function updateHeader(title,subtitle){$("pageTitle").textContent=title;$("pageSubtitle").textContent=subtitle;}
+function render(){
+  $("balance").textContent=money(balance);
+  $("txCount").textContent=transactionCount+" total";
+  $("totalTransactions").textContent=transactionCount+" transactions";
+  const list=$("transactions");
+  list.innerHTML="";
+  [...transactions].reverse().slice(0,5).forEach(tx=>{
+    const row=document.createElement("div");row.className="transaction";
+    row.innerHTML=`<div class="tx-icon">${tx.icon}</div><div class="tx-info"><strong>${tx.title}</strong><small>${tx.date}</small></div><div class="tx-amount ${tx.kind}">${tx.amount>=0?"+":"−"}${money(Math.abs(tx.amount)).replace("Rs ","Rs ")}</div>`;
+    list.appendChild(row);
+  });
+}
+function openOperation(type){
+  currentOperation=type;
+  if(type==="balance"){
+    alert("Your available balance is "+money(balance));
+    transactions.push({title:"Balance inquiry",date:new Date().toLocaleString(),amount:0,kind:"positive",icon:"◉"});
+    transactionCount++;render();return;
+  }
+  const deposit=type==="deposit";
+  $("operationIcon").textContent=deposit?"↙":"↗";
+  $("operationTitle").textContent=deposit?"Deposit money":"Withdraw cash";
+  $("operationDescription").textContent=deposit?"Enter the amount you want to add to your account.":"Enter the amount you want to withdraw from your account.";
+  $("submitOperation").textContent=deposit?"Confirm deposit":"Confirm withdrawal";
+  $("amount").value="";$("operationMessage").textContent="";
+  updateHeader(deposit?"Deposit funds":"Withdraw cash", "Complete your transaction below.");
+  showScreen("operationScreen");
+}
+$("loginForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  if($("pin").value===DEMO_PIN){
+    $("loginError").textContent="";$("pin").value="";
+    updateHeader("Account dashboard","Here is your account summary and recent activity.");
+    showScreen("dashboardScreen");render();
+  }else{$("loginError").textContent="Incorrect PIN. Please try again."; $("pin").value="";}
+});
+document.querySelectorAll("[data-action]").forEach(btn=>btn.addEventListener("click",()=>openOperation(btn.dataset.action)));
+$("operationForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const amount=Number($("amount").value);
+  if(!Number.isFinite(amount)||amount<=0){$("operationMessage").textContent="Please enter a valid amount greater than zero.";return;}
+  if(currentOperation==="withdraw"&&amount>balance){$("operationMessage").textContent="Insufficient balance. Please enter a smaller amount.";return;}
+  if(currentOperation==="deposit"){
+    balance+=amount;
+    transactions.push({title:"Cash deposit",date:new Date().toLocaleString(),amount:amount,kind:"positive",icon:"↙"});
+    $("operationMessage").textContent="Deposit successful.";
+  }else{
+    balance-=amount;
+    transactions.push({title:"Cash withdrawal",date:new Date().toLocaleString(),amount:-amount,kind:"negative",icon:"↗"});
+    $("operationMessage").textContent="Withdrawal successful. Please collect your cash.";
+  }
+  transactionCount++;render();
+  setTimeout(()=>{updateHeader("Account dashboard","Your transaction has been processed.");showScreen("dashboardScreen");},650);
+});
+$("backBtn").addEventListener("click",()=>{updateHeader("Account dashboard","Here is your account summary and recent activity.");showScreen("dashboardScreen");});
+$("logoutBtn").addEventListener("click",()=>{showScreen("loginScreen");updateHeader("Welcome back","Enter your PIN to access your account.");});
+render();
+</script>
+</body>
+</html>
